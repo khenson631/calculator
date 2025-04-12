@@ -3,34 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KALK-U-LATOR 9000</title>
+    <title>KALKULATOR-9000</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <main id="calc">
-        <div class="interface_container">
+        <h1>KALKULATOR-9000</h1>
+            <div class="interface_container">
                 <div id="display">0</div>
                 <button class="clear" id="clear" data-key="delete">AC</button>
                 <button class="sign" id="sign">+/-</button>
-                <button class="percent" id="percent">%</button>
+                <button class="percent" id="percent" data-key="%">%</button>
                 <button class="operator" id="multiply" data-key="x">*</button>
                 <button class="number" value="7" data-key="7">7</button>
                 <button class="number" value="8" data-key="8">8</button>
                 <button class="number" value="9" data-key="9">9</button>
-                <button class="operator" id="divide">/</button>
-                <button class="number" value="4">4</button>
-                <button class="number" value="5">5</button>
-                <button class="number" value="6">6</button>
-                <button class="operator" id="add">+</button>
-                <button class="number" value="1">1</button>
-                <button class="number" value="2">2</button>
-                <button class="number" value="3">3</button>
-                <button class="operator" id="subtract">-</button>
-                <button class="number" value="0">0</button>
-                <button class="decimal" value=".">.</button>
-                <button class="equal" id="equal">=</button>
+                <button class="operator" id="divide" data-key="/">/</button>
+                <button class="number" value="4" data-key="4">4</button>
+                <button class="number" value="5" data-key="5">5</button>
+                <button class="number" value="6" data-key="6">6</button>
+                <button class="operator" id="add" data-key="+">+</button>
+                <button class="number" value="1" data-key="1">1</button>
+                <button class="number" value="2" data-key="2">2</button>
+                <button class="number" value="3" data-key="3">3</button>
+                <button class="operator" id="subtract" data-key="-">-</button>
+                <button class="number" value="0" data-key="0">0</button>
+                <button class="decimal" value="." data-key=".">.</button>
+                <button class="equal" id="equal" data-key="=">=</button>
         </div>
+        <footer>
+            <p>Copyright &copy; <script>document.write( new Date().getFullYear() );</script> Kyle Henson</p>
+        </footer>
     </main>
+    <i class="material-icons">&#xe14a;</i>
 
 
     <!-- this goes last in section! -->

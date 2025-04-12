@@ -2,7 +2,7 @@
 // Define variables for operation. 
 let num1 = 0;
 let num2 = 0;
-let operator = null; //not sure if this is valid
+let operator = null;
 let buttons = document.querySelectorAll("div.interface_container button");
 
 let operatorClicked = false;
@@ -10,28 +10,42 @@ let decimalClicked = false;
 let displayClearedForNextNum = false;
 let equalClicked = false;
 let operatorExecuted = false;
+const display = document.getElementById("display");
 
 let result = 0;
 
 var state = "cleared";
 // states:
-// cleared -- default state. Ready for new operations
-// operator -- operator clicked
-// evaluated -- equal button clicked
+    // cleared -- default state. Ready for new operations
+    // operator -- operator clicked
+    // evaluated -- equal button clicked
 
 "use strict";
 
-// window.addEventListener('keydown', function(e){
-//     const key = document.querySelector(`button[data-key='${e.keyCode}']`);
-//     key.click();
-//     //alert("key clicked: " + button.textContent);
-// });
+// handle keyboard input
+document.addEventListener('keydown', (event) => {
+    let key = event.key;
+    
+    // Map Enter to equals sign
+    if (key === "Enter") {
+        key = "=";
+        event.preventDefault(); // <--- Add this to stop default behavior
+    }
+
+    const button = document.querySelector(`button[data-key="${key}"]`);
+
+    if (button) {
+        button.click(); // simulate the click
+    }
+});
+
 
 buttons.forEach(button => {
     button.addEventListener('click', (event) => {
-        // 'const operator = event.target.textContent; // Or use id if you set it
-        // alert("Button clicked: " + button.textContent);
         
+        //Check if click is on the button and not on the container
+	    if(!event.target.closest('button')) return;
+
         let key = event.target.textContent;
 
         switch (event.target.className) {
@@ -47,7 +61,6 @@ buttons.forEach(button => {
                     clearDisplayForNextNumber();
                 }
 
-                // displayNumber(event.target.textContent);
                 displayNumber(key);
                 break;
                
@@ -57,7 +70,7 @@ buttons.forEach(button => {
                     case ("evaluated"):
                         clearVars();
                         clearDisplayForNextNumber();
-                        displayNumber(event.target.textContent);
+                        displayNumber(key);
                         decimalClicked = true;
                         break;
                     case ("operator"):
@@ -65,13 +78,13 @@ buttons.forEach(button => {
                             clearDisplayForNextNumber();
                         }           
                         if (display.innerText.includes('.') === false) {    
-                            displayNumber(event.target.textContent);
+                            displayNumber(key);
                             decimalClicked = true;
                         }   
                         break;
                     case ("cleared"):
                         if (display.innerText.includes('.') === false) {    
-                            displayNumber(event.target.textContent);
+                            displayNumber(key);
                             decimalClicked = true;
                         }     
                         break;
@@ -81,7 +94,7 @@ buttons.forEach(button => {
             
             case "operator":
                 state = "operator";    
-                operator = event.target.textContent;
+                operator = key;
                 operatorClicked = true;
                 displayClearedForNextNum = false;
                 break;
@@ -119,30 +132,43 @@ buttons.forEach(button => {
                 state = "cleared";
                 display.innerText = 0;
                 clearVars();
+            
+            case "backspace":
+                //alert("backspace");
+                break;
         }
     });
 });
 
 function displayNumber(num) {
-    const display = document.getElementById("display");
+    // const display = document.getElementById("display");
     
     // clear display if zero
     if (display.innerText === "0") {
-        clearDisplay();
+        if (num !== ".") {
+            clearDisplay();
+        }
     };
 
-    // display scientific if over 10 chars
-    if (num.toString().length > 10) {
-        num = num.toExponential(0);
-    }
+    // round to 10 decimals
+    num = roundToTenDecimals(num);
 
+    // remove trailing zeroes
+    let numStr = num.toString();
+    numStr = trimTrailingZeros(numStr);
+
+    // display scientific if over 10 chars
+    if (numStr.length > 10) {
+        num = Number(num).toExponential(2);
+    }
+    
     if (display.innerText.length < 10) {
         let numToAppend = document.createTextNode(num);
         display.appendChild(numToAppend);
     }
-    
+
     if (state === "operator" || state === "evaluated") {
-        num2 = Number(display.innerText);
+       num2 = Number(display.innerText);
     }
     else {
         num1 = Number(display.innerText);
@@ -175,9 +201,6 @@ function operate(operator,num1,num2) {
                 result = "WTF?";
             } else result = divide(num1,num2);
             break;
-        case "%":
-            //result = percentage(num2);
-            //break;
         case undefined:
             result = display.innerText;
             break;
@@ -235,11 +258,20 @@ function percentage(num) {
 // OPERATOR FUNCTIONS - END//
 /////////////////////////////
 
-function roundToTenDecimals(num) {
-    return Number(Math.round(num + "e+10") + "e-10");
+// function roundToTenDecimals(num) {
+//     return Number(Math.round(num + "e+10") + "e-10");
+// }
 
+function roundToTenDecimals(num) {
+    if (typeof num !== "number") return num;
+    let roundedStr = num.toFixed(10).replace(/\.?0+$/, '');
+    return Number(roundedStr);
 }
 
-// function (numToScientific) {
-//     num.toExponential();
-// }
+function trimTrailingZeros(number) {
+    const str = String(number);
+    if (!str.includes('.')) {
+      return str;
+    }
+    return str.replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1');
+  }
