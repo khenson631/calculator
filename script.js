@@ -32,6 +32,13 @@ document.addEventListener('keydown', (event) => {
         event.preventDefault(); // <--- Add this to stop default behavior
     }
 
+    // Handle backspace
+    if (key === "Backspace") {
+        handleBackspace();
+        event.preventDefault(); // Prevent navigating back in the browser
+        return;
+    }
+
     const button = document.querySelector(`button[data-key="${key}"]`);
 
     if (button) {
@@ -275,3 +282,22 @@ function trimTrailingZeros(number) {
     }
     return str.replace(/\.0+$|(\.[0-9]*[1-9])0+$/, '$1');
   }
+
+function handleBackspace() {
+    let text = display.innerText;
+    
+    if (state !== "evaluated"){
+        if (text.length > 1) {
+            display.innerText = text.slice(0, -1);
+        } else {
+            display.innerText = "0";
+        }
+    }
+ 
+    // Update num1 or num2 based on current state
+    if (state === "operator") {
+        num2 = Number(display.innerText);
+    } else {
+        num1 = Number(display.innerText);
+    }
+}
